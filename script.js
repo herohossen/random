@@ -36,7 +36,7 @@ function shuffleNames() {
 // Function to start the spinning process
 function spin() {
     if (names.length === 0) {
-        alert("Please add some names first!");
+        alert("Please add names first!");
         return;
     }
 
@@ -47,9 +47,9 @@ function spin() {
     // Stop auto-shuffling and perform the final spin
     clearInterval(shuffleInterval);
 
-    const spinDuration = 50000; // Faster spin duration in ms
-    const minSpeed = 2000; // Minimum speed of the spinner in ms
-    let currentSpeed = 10; // Start speed for the spinner (lower value for faster)
+    const spinDuration = 10000; // Spin duration in ms
+    const minSpeed = 500; // Minimum speed of the spinner in ms
+    let currentSpeed = 30; // Start speed for the spinner (lower value for faster)
     let spinTime = 0;
     let currentIndex = 0;
 
@@ -81,12 +81,60 @@ function displaySpinner(index) {
     items[index].classList.add("spinning");
 }
 
-// Function to display the winner after the spin
+// Function to display the winner after the spin in a popup
 function displayWinner(index) {
     const winner = names[index];
-    document.getElementById("winner").textContent = winner;
-    document.querySelector("button").disabled = false; // Re-enable button after spin
+
+    // Create a congratulatory message popup
+    const popup = document.createElement("div");
+    popup.classList.add("popup");
+
+    const message = document.createElement("div");
+    message.classList.add("popup-message");
+    message.innerHTML = `
+        <h2>🎉 Congratulations! 🎉</h2>
+        <h3>Winner: ${winner}</h3>
+        <button class="popup-close">Close</button>
+    `;
+    
+    // Add event listener for the close button
+    message.querySelector(".popup-close").addEventListener("click", () => {
+        document.body.removeChild(popup); // Remove the popup when close is clicked
+        document.querySelector("button").disabled = false; // Re-enable button after closing
+        removeBalloons(); // Remove balloons when closing the popup
+    });
+
+    popup.appendChild(message);
+    document.body.appendChild(popup);
+
+    // Trigger the festive balloons animation
+    showBalloons();
+
     isSpinning = false;
+}
+
+// Function to show festive balloons
+function showBalloons() {
+    const balloonContainer = document.createElement("div");
+    balloonContainer.classList.add("balloon-container");
+    
+    // Create multiple balloons
+    for (let i = 0; i < 5; i++) {
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.animationDelay = `${Math.random() * 5}s`;
+        balloonContainer.appendChild(balloon);
+    }
+
+    document.body.appendChild(balloonContainer);
+}
+
+// Function to remove balloons when the popup is closed
+function removeBalloons() {
+    const balloonContainer = document.querySelector(".balloon-container");
+    if (balloonContainer) {
+        document.body.removeChild(balloonContainer);
+    }
 }
 
 // Auto shuffle the names faster and update the display
@@ -110,3 +158,91 @@ window.onload = function() {
             console.error('Error loading names:', error);
         });
 }
+
+// Function to show fireworks randomly
+function showFireworks() {
+    const fireworkContainer = document.createElement("div");
+    fireworkContainer.classList.add("firework-container");
+    
+    // Random number of fireworks
+    const numOfFireworks = Math.floor(Math.random() * 5) + 3;  // Between 3 and 7 fireworks
+    for (let i = 0; i < numOfFireworks; i++) {
+        const firework = document.createElement("div");
+        firework.classList.add("firework");
+        
+        // Randomly position the fireworks
+        firework.style.left = `${Math.random() * 100}%`;
+        firework.style.animationDelay = `${Math.random() * 2}s`; // Add delay for randomness
+        fireworkContainer.appendChild(firework);
+    }
+
+    // Append the fireworks to the body
+    document.body.appendChild(fireworkContainer);
+
+    // Remove fireworks after animation ends
+    setTimeout(() => {
+        document.body.removeChild(fireworkContainer);
+    }, 1500); // Fireworks animation duration
+}
+
+// Function to display the winner after the spin in a popup
+// Function to display the winner after the spin in a popup
+function displayWinner(index) {
+    const winner = names[index];
+
+    // Create a congratulatory message popup
+    const popup = document.createElement("div");
+    popup.classList.add("popup");
+
+    const message = document.createElement("div");
+    message.classList.add("popup-message");
+    message.innerHTML = `
+        <h2>🎉 Congratulations! 🎉</h2>
+        <h3>Winner: ${winner}</h3>
+        <button class="popup-close">Close</button>
+    `;
+
+    // Add event listener for the close button
+    message.querySelector(".popup-close").addEventListener("click", () => {
+        document.body.removeChild(popup); // Remove the popup when close is clicked
+        document.querySelector("button").disabled = false; // Re-enable button after closing
+        removeBalloons(); // Remove balloons when closing the popup
+    });
+
+    popup.appendChild(message);
+    document.body.appendChild(popup);
+
+    // Trigger the festive balloons animation
+    showBalloons();
+
+    // Trigger the fireworks animation using Fireworks.js
+    startFireworks();  // Call the function to trigger fireworks
+
+    isSpinning = false;
+}
+
+// Function to start fireworks using Fireworks.js
+// Function to start fireworks using Fireworks.js
+// Correct Fireworks.js initialization
+function startFireworks() {
+    if (typeof Fireworks === 'undefined') {
+        console.error('Fireworks.js is not loaded.');
+        return;
+    }
+
+    // Initialize Fireworks.js using the create() method
+    const fireworks = Fireworks({
+        particleCount: 100,
+        speed: 4,
+        angle: 90,
+        gravity: 1.5
+    });
+
+    fireworks.start();
+
+    // Optionally, stop fireworks after 3 seconds
+    setTimeout(() => {
+        fireworks.stop();
+    }, 3000);
+}
+
